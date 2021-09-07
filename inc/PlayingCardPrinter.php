@@ -5,8 +5,6 @@ namespace Keno;
 
 use setasign\Fpdi\Fpdi;
 
-require __DIR__ . '/../vendor/setasign/fpdf/makefont/makefont.php';
-
 class PlayingCardPrinter
 {
     const PDF_TEMPLATE = __DIR__ . '/../templates/lotto.pdf';
@@ -37,8 +35,7 @@ class PlayingCardPrinter
 
         $pdf = new FPDI();
         $pdf->setSourceFile(self::PDF_TEMPLATE);
-        $pdf->AddFont('crayon', '', 'crayon.php'); //Regular
-        $pdf->SetFont('crayon', '', 35);
+        $pdf->SetFont('Helvetica', '', 35);
         $pdf->SetTextColor(40, 40, 40);
         $pdf->SetDisplayMode('real', 'default');
 
@@ -63,7 +60,7 @@ class PlayingCardPrinter
             }
         }
 
-        $pdf->Output('I', FILENAME);
+        $pdf->Output('I', self::FILENAME);
     }
 
     public function getCardSets(array $cards)
