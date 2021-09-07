@@ -10,6 +10,7 @@ require __DIR__ . '/../vendor/setasign/fpdf/makefont/makefont.php';
 class PlayingCardPrinter
 {
     const PDF_TEMPLATE = __DIR__ . '/../templates/lotto.pdf';
+    const FILENAME = 'lotto_ready.pdf';
 
     private int   $cardsAmount;
     private array $cards;
@@ -31,24 +32,12 @@ class PlayingCardPrinter
 
     private function printPDF(array $cards)
     {
-        $cardsSets = [];
-
-        while ($cards) {
-            $page = [];
-            foreach (range(1, 3) as $iterator) {
-                if ($cards) {
-                    $page[] = array_pop($cards);
-                }
-            }
-
-            $cardsSets[] = $page;
-        }
-
+        $cardsSets = $this->getCardSets($cards);
         $pagesAmount = count($cardsSets);
 
         $pdf = new FPDI();
         $pdf->setSourceFile(self::PDF_TEMPLATE);
-        $pdf->AddFont('crayon','','crayon.php'); //Regular
+        $pdf->AddFont('crayon', '', 'crayon.php'); //Regular
         $pdf->SetFont('crayon', '', 35);
         $pdf->SetTextColor(40, 40, 40);
         $pdf->SetDisplayMode('real', 'default');
@@ -74,8 +63,25 @@ class PlayingCardPrinter
             }
         }
 
-        $file_name = 'lotto_ready.pdf';
-        $pdf->Output('I', $file_name);
+        $pdf->Output('I', FILENAME);
+    }
+
+    public function getCardSets(array $cards)
+    {
+        $cardsSets = [];
+
+        while ($cards) {
+            $page = [];
+            foreach (range(1, 3) as $iterator) {
+                if ($cards) {
+                    $page[] = array_pop($cards);
+                }
+            }
+
+            $cardsSets[] = $page;
+        }
+
+        return $cardsSets;
     }
 
     /**
@@ -94,7 +100,7 @@ class PlayingCardPrinter
         return $this->cardsAmount;
     }
 
-    private function printHtml(PlayingCard $card): void
+    private function printDebug(PlayingCard $card): void
     {
         ?>
 
@@ -110,7 +116,6 @@ class PlayingCardPrinter
                 echo "</p>";
             }; ?>
             </pre>
-
         </div>
 
         <?php
